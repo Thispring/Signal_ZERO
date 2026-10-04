@@ -4,21 +4,15 @@
   <img src="ScreenShot/s1.jpg" width="85%" alt="메인 화면">
 </p>
 
-Unity 기반으로 제작한 3인칭 슈팅 게임입니다.
-
-기존에 개발한 **Cord: Marigold**의 게임 시스템을 기반으로, 공모전 출품을 위해 게임의 아트 에셋과 세계관을 새롭게 구성하고 보스전, 보조 로봇, 튜토리얼 등 새로운 게임 플레이 시스템을 추가 개발했습니다.
-
-본 리포지토리는 포트폴리오 공개를 목적으로 프로젝트의 스크립트 코드만 포함하고 있습니다.
+Unity로 제작한 3인칭 슈팅 게임입니다.
+이전 프로젝트 **Cord: Marigold**의 전투·스테이지 코드를 바탕으로, 공모전 출품을 위해 아트와 세계관을 새로 구성하고 보스전, 보조 로봇, 튜토리얼 기능을 추가했습니다.
 
 ---
 
 ## 프로젝트 소개
 
-Signal ZERO는 적과 전투하며 스테이지를 진행하는 3인칭 슈팅 게임입니다.
-
-기존 프로젝트의 기본적인 전투와 스테이지 진행 시스템을 기반으로 게임의 모든 아트 에셋을 변경했으며, 공모전 출품을 위한 새로운 게임 경험을 구성하기 위해 보스전과 보조 로봇 시스템, 단계별 튜토리얼 시스템 등을 추가로 구현했습니다.
-
-특히 기존 프로젝트에서 반복되는 일반 적 전투 중심의 게임 구조를 확장하여, 보스의 공격 패턴과 드론 소환을 활용한 보스전과 플레이어를 지원하는 보조 로봇 시스템을 추가했습니다.
+Signal ZERO는 적을 처치하며 스테이지를 진행하는 3인칭 슈팅 게임입니다.
+기존 프로젝트가 일반 적 전투를 반복하는 구조였다면, 이번 프로젝트에서는 드론을 소환하는 중간·최종 보스전과 플레이어를 돕는 보조 로봇, 처음 플레이하는 사람을 위한 튜토리얼을 추가했습니다.
 
 | 항목 | 내용 |
 | --- | --- |
@@ -45,121 +39,82 @@ Signal ZERO는 적과 전투하며 스테이지를 진행하는 3인칭 슈팅 �
 
 ## Download
 
-게임 실행파일은 아래 링크에서 다운로드 할 수 있습니다.
+게임 실행 파일은 아래 링크에서 다운로드할 수 있습니다.
 
-**Windows**
-
-[Download for Windows](https://drive.google.com/file/d/1VdHJm5ZFoXLx-FKhUd7o9kDCNno-rHhl/view?usp=drive_link)
-
-**macOS**
-
-[Download for macOS](https://drive.google.com/file/d/1Au9_S1u2VYu-R0du6c2_p5_7zrxpcQBt/view?usp=drive_link)
+- [Download for Windows](https://drive.google.com/file/d/1VdHJm5ZFoXLx-FKhUd7o9kDCNno-rHhl/view)
+- [Download for macOS](https://drive.google.com/file/d/1Au9_S1u2VYu-R0du6c2_p5_7zrxpcQBt/view)
 
 ---
 
 ## My Role
 
-### Client Programming
+기획과 프로그래밍을 혼자 담당했습니다.
 
-- 기존 Cord: Marigold의 게임 시스템 확장 및 신규 시스템 구현
-- 보스의 공격 패턴 및 드론 소환 시스템 구현
-- 보스 미사일 및 발사체 공격 구현
-- 보조 로봇의 지원 스킬 및 상태 시스템 구현
-- 적 탐색 및 보조 로봇 자동 공격 시스템 구현
-- 적 보호막 및 상태 연동 시스템 구현
-- 단계별 진행이 가능한 튜토리얼 시스템 구현
-- 기존 전투, 스테이지 및 상점 시스템 수정 및 확장
-- UI, 컷신 및 게임 진행 관련 기능 구현
+- Cord: Marigold의 전투·스테이지·상점 코드를 가져와 이번 프로젝트에 맞게 수정
+- 중간·최종 보스전 구현 (드론 소환, 일반 탄·미사일 공격, 중간 보스 순간이동)
+- 보조 로봇 3종(가드·보호막·회복)과 상점 업그레이드 연동
+- 보호막 적과 보조 로봇의 자동 공격 대상 탐색 구현
+- 단계별 튜토리얼과 대사 출력 구현
+- 보스 등장 영상, 버스트 연출 등 컷신과 UI 구현
 
 ---
 
-# 주요 구현 기능
+## 주요 구현 내용
 
-## 보스 패턴 및 드론 연동 시스템
+### 보스 공격 패턴과 드론 소환
 
-보스전에서 단순히 일정한 공격을 반복하는 것이 아니라, 공격 대기 시간 동안 드론을 소환하고 드론의 생존 상태에 따라 보스의 공격 강도를 결정하도록 구현했습니다.
+보스는 `대기 → 공격 → 대기`를 반복하며, 대기 시간이 시작될 때마다 드론을 무작위 위치에 소환합니다(중간 보스 2~6기, 최종 보스 4~9기).
+대기 시간이 끝나면 남은 드론 수에 따라 다음 공격이 정해집니다.
 
-`BossFSM`은 공격 대기 → 드론 소환 → 공격 → 다음 패턴의 흐름을 관리합니다.
+- 드론을 모두 처치하면 이번 공격을 건너뜁니다.
+- 남은 드론이 소환 수의 절반 미만이면 발사 횟수와 데미지를 절반으로 줄입니다.
+- 공격이 끝날 때마다 시퀀스 값이 1씩 늘어나고, 이후 소환되는 드론과 보스 미사일의 체력이 그만큼 증가합니다.
 
-보스가 소환한 드론의 수가 일정 수준 이하로 감소하면 다음 공격의 강도를 조절하며, 공격이 종료될 때마다 시퀀스가 증가하도록 구성했습니다.
+중간 보스는 미사일과 일반 탄 공격을 번갈아 사용하고, 체력이 90·70·40·20%가 되면 좌우로, 60·10%가 되면 원래 위치로 순간이동합니다. 최종 보스는 미사일 공격만 사용하며, 남은 드론 비율에 따라 데미지 배율(2배/4배)이 달라집니다.
+미사일은 목표 위치를 향해 포물선으로 날아가며, 플레이어가 사격으로 격추할 수 있습니다.
 
-중간 보스는 미사일과 일반 공격을 번갈아 사용하며, 최종 보스는 별도의 공격 패턴을 사용하도록 보스 타입에 따라 행동을 분기했습니다.
+공격 실행은 `BossBehaviorSystem`의 코루틴이 담당하고, 공격이 끝나면 `OnMissileAttackFinished` / `OnNormalAttackFinished` 이벤트로 `BossFSM`에 알려 다음 대기를 시작합니다. 드론 처치도 `BossDroneManager.OnDroneDestroyed` 이벤트로 전달하며, 구독한 이벤트는 `OnDestroy`에서 해제합니다.
 
-**관련 코드**
-
-- [BossFSM.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Boss/BossFSM.cs)
-- [BossBehaviorSystem.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Boss/BossBehaviorSystem.cs)
-- [BossDroneManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Boss/BossDroneManager.cs)
-- [BossStatusManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Boss/BossStatusManager.cs)
-
----
-
-## 보조 로봇 지원 시스템
-
-플레이어를 지원하는 보조 로봇을 구현하고, 로봇의 종류에 따라 서로 다른 지원 기능을 사용할 수 있도록 구성했습니다.
-
-보조 로봇은 `Guard`, `Shield`, `Heal` 타입으로 구분되며, 각 타입은 플레이어 방어, 보호막, 회복 등의 역할을 수행합니다.
-
-스킬 사용에는 지속 시간과 쿨다운을 적용했으며, 업그레이드 단계에 따라 자동 재장전이나 가장 가까운 적을 자동으로 공격하는 기능이 추가되도록 구현했습니다.
-
-적 탐색은 별도의 `SearchEnemyManager`에서 활성화된 적을 관리하고, 위치를 기준으로 가장 가까운 적을 탐색하도록 구성했습니다.
-
-**관련 코드**
-
-- [SupportBotFSM.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/SupportBot/SupportBotFSM.cs)
-- [SupportBotStatusManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/SupportBot/SupportBotStatusManager.cs)
-- [SupportBotSetting.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/SupportBot/SupportBotSetting.cs)
-- [SearchEnemyManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/GameManager/SearchEnemyManager.cs)
+**관련 코드** [BossFSM.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Boss/BossFSM.cs) · [BossBehaviorSystem.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Boss/BossBehaviorSystem.cs) · [BossDroneManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Boss/BossDroneManager.cs) · [BossMissile.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Boss/BossMissile.cs)
 
 ---
 
-## 단계별 튜토리얼 시스템
+### 보조 로봇
 
-게임의 주요 조작과 시스템을 순차적으로 안내할 수 있도록 단계별 튜토리얼 시스템을 구현했습니다.
+플레이어 옆에서 지원하는 보조 로봇을 구현했습니다. 상점에서 타입을 고를 수 있고, D 키로 스킬을 사용합니다. 스킬 지속 시간이 끝나면 쿨타임이 시작됩니다.
 
-`TutorialStep`을 추상 클래스로 구성하고, 각 튜토리얼 기능을 독립적인 클래스로 구현하여 새로운 튜토리얼 단계를 추가할 수 있도록 구성했습니다.
-
-`TutorialController`는 현재 진행 중인 튜토리얼 단계를 관리하며, 현재 단계가 완료되면 다음 단계로 이동합니다.
-
-적 생성, 적 처치, 보조 로봇 활성화, 스킬 사용, 상점 이용 등 게임의 주요 기능을 각각 독립적인 튜토리얼 단계로 구성했습니다.
-
-**관련 코드**
-
-- [TutorialController.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialController.cs)
-- [TutorialStep.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialStep.cs)
-- [TutorialStep_SpawnEnemies.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialStep_SpawnEnemies.cs)
-- [TutorialStep_ActiveSupportBot.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialStep_ActiveSupportBot.cs)
-- [TutorialStep_WaitForSkillUse.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialStep_WaitForSkillUse.cs)
-- [TutorialStep_OpenShop.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialStep_OpenShop.cs)
-
----
-
-## 적 보호막 시스템
-
-특정 적이 등장하는 동안 다른 일반 적이 보호 상태를 유지하도록 적 보호막 시스템을 구현했습니다.
-
-`EnemyShieldManager`는 보호막 적의 활성화 상태를 관리하며, 보호막이 활성화된 동안 일반 적의 공격 판정을 제한하도록 구성했습니다.
-
-보호막 적이 제거되면 관련 상태를 해제하고, 일반 적이 다시 공격 대상이 될 수 있도록 처리했습니다.
-
-이 시스템은 보조 로봇의 적 탐색 기능과도 연동되어, 보호막을 가진 적을 우선적으로 탐색할 수 있도록 구성했습니다.
-
-**관련 코드**
-
-- [EnemyShieldManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Enemy/EnemyShieldManager.cs)
-- [EnemyShield.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Enemy/EnemyShield.cs)
-- [SearchEnemyManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/GameManager/SearchEnemyManager.cs)
-
----
-
-# 사용 기술
-
-| 기술 | 활용 |
+| 타입 | 동작 |
 | --- | --- |
-| Unity | 게임 클라이언트 개발 |
-| C# | 게임 로직 및 시스템 구현 |
-| Unity Physics | Raycast 기반 사격 및 게임 오브젝트 상호작용 처리 |
-| Unity UI | 체력, 스킬, 튜토리얼 및 게임 인터페이스 구현 |
+| 가드 | 지속 시간 동안 적의 공격 대상을 플레이어에서 보조 로봇으로 바꿉니다. 가드 중 새로 소환된 적도 같은 대상을 공격합니다. |
+| 보호막 | 지속 시간 동안 플레이어가 피해를 받지 않습니다. 미사일과 부딪히면 보호막이 즉시 해제됩니다. |
+| 회복 | 지속 시간 동안 1초마다 플레이어 체력을 회복합니다. |
+
+가드 발동·해제는 `SupportBotFSM`의 정적 이벤트로 알리고, 각 적의 `EnemyFSM`이 이를 구독해 공격 대상을 바꿉니다.
+상점 업그레이드로 지속 시간과 수치가 늘어나며, 업그레이드 레벨이 3 이상이면 스킬 사용 시 무기를 즉시 재장전하고, 6 이상이면 일정 시간 동안 적을 자동 공격합니다.
+
+**관련 코드** [SupportBotFSM.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/SupportBot/SupportBotFSM.cs) · [SupportBotStatusManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/SupportBot/SupportBotStatusManager.cs) · [EnemyFSM.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Enemy/EnemyFSM.cs)
+
+---
+
+### 적 탐색과 보호막 적
+
+보호막 적이 필드에 있는 동안 보호 대상 적(`EnemyShield`)에 보호막 이펙트를 표시하고, 레이어를 `Ignore Raycast`로 바꿔 플레이어의 Raycast 사격에 맞지 않도록 했습니다. 보호막 적이 사라지면 레이어를 원래대로 되돌립니다.
+
+보조 로봇의 자동 공격은 이 보호막 적을 가장 먼저 노리도록 했습니다. `SearchEnemyManager`는 적의 소환·처치 이벤트를 받아 활성화된 적 목록을 관리하고, 거리 제곱(`sqrMagnitude`)으로 가장 가까운 적을 찾습니다.
+자동 공격은 `가장 가까운 보호막 적 → 보스 → 가장 가까운 일반 적` 순서로 대상을 정합니다. 일반 적과 보호막 적에게는 별도의 데미지 함수(`SupportBotTakeDamage`)를 사용해, 보조 로봇의 공격으로는 플레이어의 버스트 게이지가 차지 않도록 했습니다.
+
+**관련 코드** [SearchEnemyManager.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/GameManager/SearchEnemyManager.cs) · [SupportBotFSM.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/SupportBot/SupportBotFSM.cs)
+
+---
+
+### 튜토리얼
+
+`TutorialStep` 추상 클래스(`Enter` / `Execute` / `Exit` / `Skip`)를 상속해 단계별 클래스를 만들고, `TutorialController`가 Inspector에 등록된 단계 목록을 순서대로 실행합니다.
+각 단계는 적 3마리 처치, 버스트 사용, 스킬 키 입력, 상점 이용 등 자신의 조건을 확인한 뒤 컨트롤러에 다음 단계 진행을 요청합니다. 대사는 `DialogSystem`으로 출력합니다.
+
+튜토리얼이 끝나면 남은 튜토리얼 적을 정리하고, 플레이어 체력과 보조 로봇을 복구한 뒤 1스테이지 적 소환을 시작합니다.
+
+**관련 코드** [TutorialController.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialController.cs) · [TutorialStep.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialStep.cs) · [TutorialStep_WaitForSkillUse.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialStep_WaitForSkillUse.cs) · [TutorialStep_OpenShop.cs](https://github.com/Thispring/Signal_ZERO/blob/main/Script/Tutorial/TutorialStep_OpenShop.cs)
 
 ---
 
